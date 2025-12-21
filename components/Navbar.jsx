@@ -4,8 +4,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useUser, useClerk, UserButton } from '@clerk/nextjs';
+import { PackageIcon } from 'lucide-react';
+import { ShoppingBag } from 'lucide-react';
 
 const Navbar = () => {
+  const { user } = useUser();
+  const { openSignIn } = useClerk();
   const router = useRouter();
 
   const [search, setSearch] = useState('');
@@ -64,16 +69,57 @@ const Navbar = () => {
               </button>
             </Link>
 
-            <button className='px-8 py-2 bg-amber-500 hover:bg-yellow-600 transition text-white rounded-full'>
-              Login
-            </button>
+            {!user ? (
+              <button
+                onClick={openSignIn}
+                className='px-8 py-2 bg-amber-500 hover:bg-yellow-600 transition text-white rounded-full'
+              >
+                Login
+              </button>
+            ) : (
+              <UserButton>
+                <UserButton.MenuItems>
+                  <UserButton.Action
+                    labelIcon={<PackageIcon size={16} />}
+                    label='My Orders'
+                    onClick={() => router.push('/orders')}
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
+            )}
           </div>
 
           {/* Mobile User Button  */}
           <div className='sm:hidden'>
-            <button className='px-7 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-sm transition text-white rounded-full'>
-              Login
-            </button>
+            {!user ? (
+              <button
+                onClick={openSignIn}
+                className='px-7 py-1.5 bg-amber-500 hover:bg-amber-600 text-sm transition text-white rounded-full'
+              >
+                Login
+              </button>
+            ) : (
+              <div>
+                <UserButton>
+                  <UserButton.MenuItems>
+                    <UserButton.Action
+                      labelIcon={<ShoppingBag size={16} />}
+                      label='Cart'
+                      onClick={() => router.push('/cart')}
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
+                <UserButton>
+                  <UserButton.MenuItems>
+                    <UserButton.Action
+                      labelIcon={<PackageIcon size={16} />}
+                      label='My Orders'
+                      onClick={() => router.push('/orders')}
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </div>
+            )}
           </div>
         </div>
       </div>
