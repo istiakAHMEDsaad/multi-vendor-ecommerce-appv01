@@ -21,7 +21,7 @@ export const syncUserCreation = inngest.createFunction(
 // Inngest Funciton to update user data to a database
 export const syncUserUpdation = inngest.createFunction(
   { id: 'sync-user-update' },
-  { event: 'clerk/user.update' },
+  { event: 'clerk/user.updated' },
   async ({ event }) => {
     const { data } = event;
     await prisma.user.update({
@@ -31,6 +31,18 @@ export const syncUserUpdation = inngest.createFunction(
         name: `${data.first_name} ${data.last_name}`,
         image: data.image_url,
       },
+    });
+  }
+);
+
+// Inngest Function to delete user data from a database
+export const syncUserDeletion = inngest.createFunction(
+  { id: 'sync-user-delete' },
+  { event: 'clerk/user.deleted' },
+  async ({ event }) => {
+    const { data } = event;
+    await prisma.user.delete({
+      where: { id: data.id },
     });
   }
 );
