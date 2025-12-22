@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
       <html lang='en'>
         <body className={`${outfit.className} antialiased`}>
           <StoreProvider>
-            <Toaster />
+            <Toaster position='top-right' toastOptions={{ duration: 3000 }} />
             {children}
           </StoreProvider>
         </body>
