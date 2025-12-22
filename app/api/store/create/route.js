@@ -1,4 +1,4 @@
-import imagekit from '@/configs/imageKit';
+import imagekit from '@/configs/imagekit';
 import prisma from '@/lib/prisma';
 import { getAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
@@ -6,6 +6,10 @@ import { NextResponse } from 'next/server';
 export async function POST(request) {
   try {
     const { userId } = getAuth(request);
+
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // get the form data
     const formData = await request.formData();
@@ -91,8 +95,33 @@ export async function POST(request) {
 
     return NextResponse.json({ message: 'Applied, wating for approval' });
   } catch (error) {
-    console.error(error.error);
-    NextResponse.json({ error: error.code || error.message }, { status: 400 });
+    console.error('Store api error', error);
+    return NextResponse.json(
+      { error: error.code || error.message },
+      { status: 400 }
+    );
   }
 }
 
+// Check is user have already registered a store, if yes then send the data
+export async function GET(request) {
+  try {
+    const { userId } = getAuth(request);
+
+    // check user have already registered a store:
+    const store = await prisma.store.findFirst({ where: { userId: userId } });
+
+    // if store already registered then send status of store:
+    if (store) {
+      return NextResponse.json({ status: store.status });
+    }
+
+    return NextResponse.json({ status: 'Not registered' });
+  } catch (error) {
+    console.error('Get api failed', error);
+    return NextResponse.json(
+      { error: error.code || error.message },
+      { status: 400 }
+    );
+  }
+}
