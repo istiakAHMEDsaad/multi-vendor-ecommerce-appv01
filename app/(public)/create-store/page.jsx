@@ -33,6 +33,44 @@ export default function CreateStore() {
 
   const fetchSellerStatus = async () => {
     // Logic to check if the store is already submitted
+    try {
+      const token = await getToken();
+      const { data } = await axios.get('/api/store/create', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (['approved', 'rejected', 'pending'].includes(data.status)) {
+        setStatus(data.status);
+        setAlreadySubmitted(true);
+        switch (data.status) {
+          case 'approved':
+            setMessage(
+              'Your store has been approved, you can now add products to your store from the dashboard'
+            );
+            setTimeout(() => router.push('/store'), 5000);
+            break;
+
+          case 'rejected':
+            setMessage(
+              'Your store request has been rejected, Contact the admin for more details...'
+            );
+            break;
+
+          case 'pending':
+            setMessage(
+              'Your store request is pending, please wait for admin to approve your store'
+            );
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        setAlreadySubmitted(false);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    }
 
     setLoading(false);
   };
@@ -62,14 +100,17 @@ export default function CreateStore() {
       });
 
       toast.success(data.message);
+      await fetchSellerStatus();
     } catch (error) {
       toast.error(error?.response?.data?.error || error?.message);
     }
   };
 
   useEffect(() => {
-    fetchSellerStatus();
-  }, []);
+    if (user) {
+      fetchSellerStatus();
+    }
+  }, [user]);
 
   if (!user) {
     return (
