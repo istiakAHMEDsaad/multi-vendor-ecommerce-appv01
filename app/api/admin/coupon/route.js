@@ -1,3 +1,4 @@
+import { inngest } from '@/inngest/client';
 import prisma from '@/lib/prisma';
 import authAdmin from '@/middlewares/authAdmin';
 import { getAuth } from '@clerk/nextjs/server';
@@ -16,7 +17,16 @@ export async function POST(request) {
     const { coupon } = await request.json();
     coupon.code = coupon.code.toUpperCase();
 
-    await prisma.coupon.create({ data: coupon });
+    await prisma.coupon.create({ data: coupon }).then(async (coupon) => {
+      // run inngest sheduler function to delete coupon on expire
+      await inngest.send({
+        name: 'app/coupon.expired',
+        data: {
+          code: coupon.code,
+          expires_at: coupon.expiresAt,
+        },
+      });
+    });
 
     return NextResponse.json({ message: 'Coupon added successfully' });
   } catch (error) {
@@ -55,7 +65,6 @@ export async function DELETE(request) {
   }
 }
 
-
 // get all coupon
 export async function GET(request) {
   try {
@@ -67,7 +76,7 @@ export async function GET(request) {
     }
 
     const coupons = await prisma.coupon.findMany({});
-    return NextResponse.json({coupons})
+    return NextResponse.json({ coupons });
   } catch (error) {
     console.error('Cannot find any coupon', error);
     return NextResponse.json(
