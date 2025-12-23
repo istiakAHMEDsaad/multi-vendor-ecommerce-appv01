@@ -8,7 +8,7 @@ const StoreInfo = ({ store }) => {
       <Image
         width={100}
         height={100}
-        src='https://images.unsplash.com/photo-1529778873920-4da4926a72c2?q=80&w=436&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+        src={store.logo}
         alt={store.name}
         className='max-w-20 max-h-20 object-contain shadow rounded-full max-sm:mx-auto'
       />
@@ -52,7 +52,7 @@ const StoreInfo = ({ store }) => {
         <Image
           width={36}
           height={36}
-          src='https://images.unsplash.com/photo-1529778873920-4da4926a72c2?q=80&w=436&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+          src={store.user.image}
           alt={store.user.name}
           className='w-9 h-9 rounded-full'
         />
