@@ -10,9 +10,11 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { assets } from '@/assets/assets';
+import { useUser } from '@clerk/nextjs';
 
 const AdminSidebar = () => {
   const pathname = usePathname();
+  const {user} = useUser();
 
   const sidebarLinks = [
     { name: 'Dashboard', href: '/admin', icon: HomeIcon },
@@ -26,12 +28,12 @@ const AdminSidebar = () => {
       <div className='flex flex-col gap-3 justify-center items-center pt-8 max-sm:hidden'>
         <Image
           className='w-14 h-14 object-cover rounded-full'
-          src='https://images.unsplash.com/photo-1529778873920-4da4926a72c2?q=80&w=436&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+          src={user.imageUrl}
           alt='avatar'
           width={80}
           height={80}
         />
-        <p className='text-slate-700'>Hi, Lily</p>
+        <p className='text-slate-700'>Hi, {user.fullName}</p>
       </div>
 
       <div className='max-sm:mt-6'>
