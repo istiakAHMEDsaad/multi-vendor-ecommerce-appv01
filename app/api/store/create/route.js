@@ -7,9 +7,9 @@ export async function POST(request) {
   try {
     const { userId } = getAuth(request);
 
-    // if (!userId) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     // get the form data
     const formData = await request.formData();
