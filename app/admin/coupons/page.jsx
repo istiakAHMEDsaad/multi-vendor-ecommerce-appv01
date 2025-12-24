@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import toast from 'react-hot-toast';
 import { DeleteIcon } from 'lucide-react';
@@ -63,13 +63,53 @@ export default function AdminCoupons() {
     setNewCoupon({ ...newCoupon, [e.target.name]: e.target.value });
   };
 
+  // delete modal
+  const confirmDeleteToast = useCallback((onConfirm) => {
+    toast.custom(
+      (t) => (
+        <div
+          className='bg-white shadow-xl rounded-lg p-4 border border-slate-200 flex flex-col gap-3 w-[320px]'
+          onClick={(e) => e.stopPropagation()} // prevent bubbling
+        >
+          <p className='text-slate-800 font-medium'>
+            Are you sure you want to delete this coupon?
+          </p>
+
+          <div className='flex justify-end gap-3'>
+            <button
+              type='button'
+              onClick={() => toast.remove(t.id)}
+              className='px-3 py-1.5 text-sm rounded bg-slate-200 text-slate-700 hover:bg-slate-300'
+            >
+              Cancel
+            </button>
+
+            <button
+              type='button'
+              onClick={() => {
+                toast.remove(t.id); // close first
+                onConfirm(); // then async delete
+              }}
+              className='px-3 py-1.5 text-sm rounded bg-red-600 text-white hover:bg-red-700'
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
+      {
+        duration: Infinity,
+      }
+    );
+  }, []);
+
   const deleteCoupon = async (code) => {
     // Logic to delete a coupon
     try {
-      const confirm = window.confirm(
-        'Are you sure you want to delete this coupon?'
-      );
-      if (!confirm) return;
+      // const confirm = window.confirm(
+      //   'Are you sure you want to delete this coupon?'
+      // );
+      // if (!confirm) return;
 
       const token = await getToken();
 
@@ -237,11 +277,18 @@ export default function AdminCoupons() {
                     {coupon.forMember ? 'Yes' : 'No'}
                   </td>
                   <td className='py-3 px-4 text-slate-800'>
-                    <DeleteIcon
-                      onClick={() =>
+                    {/* onClick={() =>
                         toast.promise(deleteCoupon(coupon.code), {
                           loading: 'Deleting coupon...',
                         })
+                      } */}
+                    <DeleteIcon
+                      onClick={() =>
+                        confirmDeleteToast(() =>
+                          toast.promise(deleteCoupon(coupon.code), {
+                            loading: 'Deleting coupon...',
+                          })
+                        )
                       }
                       className='w-5 h-5 text-red-500 hover:text-red-800 cursor-pointer'
                     />

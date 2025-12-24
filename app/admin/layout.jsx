@@ -1,23 +1,40 @@
-import AdminLayout from '@/components/admin/AdminLayout';
-import { SignedIn, SignedOut, SignIn } from '@clerk/nextjs';
+'use client'
 
-export const metadata = {
-  title: 'GoCart. - Admin',
-  description: 'GoCart. - Admin',
-};
+import AdminLayout from '@/components/admin/AdminLayout';
+import Loading from '@/components/Loading';
+import {
+  SignedIn,
+  SignedOut,
+  SignIn,
+  ClerkLoaded,
+  ClerkLoading,
+} from '@clerk/nextjs';
+
+// export const metadata = {
+//   title: 'NineCart. - Admin',
+//   description: 'NineCart. - Admin',
+// };
 
 export default function RootAdminLayout({ children }) {
   return (
     <>
-      <SignedIn>
-        <AdminLayout>{children}</AdminLayout>
-      </SignedIn>
-
-      <SignedOut>
+      <ClerkLoading>
         <div className='min-h-screen flex items-center justify-center'>
-          <SignIn fallbackRedirectUrl='/admin' routing='hash' />
+          <Loading />
         </div>
-      </SignedOut>
+      </ClerkLoading>
+
+      <ClerkLoaded>
+        <SignedIn>
+          <AdminLayout>{children}</AdminLayout>
+        </SignedIn>
+
+        <SignedOut>
+          <div className='min-h-screen flex items-center justify-center'>
+            <SignIn fallbackRedirectUrl='/admin' routing='hash' />
+          </div>
+        </SignedOut>
+      </ClerkLoaded>
     </>
   );
 }
