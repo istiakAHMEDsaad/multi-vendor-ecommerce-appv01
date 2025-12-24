@@ -14,8 +14,6 @@ export default function StoreOrders() {
   const { getToken } = useAuth();
 
   const fetchOrders = async () => {
-    // setOrders(orderDummyData);
-    // setLoading(false);
     try {
       const token = await getToken();
       const { data } = await axios.get('/api/store/orders', {
@@ -37,9 +35,7 @@ export default function StoreOrders() {
       await axios.post(
         '/api/store/orders',
         { orderId, status },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
 
       setOrders((prev) =>
@@ -48,7 +44,7 @@ export default function StoreOrders() {
         )
       );
 
-      toast.success('Order status updated')
+      toast.success('Order status updated');
     } catch (error) {
       toast.error(error?.response?.data?.error || error.message);
     }
