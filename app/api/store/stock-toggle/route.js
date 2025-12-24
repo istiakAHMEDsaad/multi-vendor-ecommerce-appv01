@@ -6,7 +6,7 @@ import authSeller from '@/middlewares/authSeller';
 export async function POST(request) {
   try {
     const { userId } = getAuth(request);
-    const { productId } = await require.json();
+    const { productId } = await request.json();
 
     if (!productId) {
       return NextResponse.json(
@@ -35,7 +35,7 @@ export async function POST(request) {
       data: { inStock: !product.inStock },
     });
 
-    return NextResponse.json({ message: 'Product stock updated successfully' }); 
+    return NextResponse.json({ message: 'Product stock updated successfully' });
   } catch (error) {
     console.error('Toggle stock api failed', error);
     return NextResponse.json(

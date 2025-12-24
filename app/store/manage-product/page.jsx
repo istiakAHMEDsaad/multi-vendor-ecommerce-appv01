@@ -38,6 +38,24 @@ export default function StoreManageProducts() {
 
   const toggleStock = async (productId) => {
     // Logic to toggle the stock of a product
+    try {
+      const token = await getToken();
+      const { data } = await axios.post(
+        '/api/store/stock-toggle',
+        { productId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setProducts((prevProducts) =>
+        prevProducts.map((product) =>
+          product.id === productId
+            ? { ...product, inStock: !product.inStock }
+            : product
+        )
+      );
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    }
   };
 
   useEffect(() => {
