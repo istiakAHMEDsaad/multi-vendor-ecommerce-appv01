@@ -36,8 +36,8 @@ const Navbar = () => {
             </Protect>
           </Link>
 
-          {/* Desktop Menu */}
-          <div className='hidden sm:flex items-center gap-4 lg:gap-8 text-slate-600'>
+          {/* medium device */}
+          <div className='max-sm:hidden sm:flex items-center gap-4 lg:gap-8 text-slate-600'>
             <Link href='/'>Home</Link>
             <Link href='/shop'>Shop</Link>
             <Link href='/'>About</Link>
@@ -89,7 +89,7 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile User Button  */}
+          {/* small device */}
           <div className='sm:hidden'>
             {!user ? (
               <button
@@ -103,18 +103,17 @@ const Navbar = () => {
                 <UserButton>
                   <UserButton.MenuItems>
                     <UserButton.Action
-                      labelIcon={<ShoppingBag size={16} />}
-                      label='Cart'
-                      onClick={() => router.push('/cart')}
-                    />
-                  </UserButton.MenuItems>
-                </UserButton>
-                <UserButton>
-                  <UserButton.MenuItems>
-                    <UserButton.Action
                       labelIcon={<PackageIcon size={16} />}
                       label='My Orders'
                       onClick={() => router.push('/orders')}
+                    />
+                  </UserButton.MenuItems>
+
+                  <UserButton.MenuItems>
+                    <UserButton.Action
+                      labelIcon={<ShoppingBag size={16} />}
+                      label='Cart'
+                      onClick={() => router.push('/cart')}
                     />
                   </UserButton.MenuItems>
                 </UserButton>
