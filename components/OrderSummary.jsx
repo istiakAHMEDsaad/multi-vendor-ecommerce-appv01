@@ -4,9 +4,13 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import AddressModal from './AddressModal';
-import { Protect } from '@clerk/nextjs';
+import { Protect, useAuth, useUser } from '@clerk/nextjs';
+import axios from 'axios';
 
 const OrderSummary = ({ totalPrice, items }) => {
+  const { user } = useUser();
+  const { getToken } = useAuth();
+
   const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$';
 
   const router = useRouter();
@@ -21,6 +25,22 @@ const OrderSummary = ({ totalPrice, items }) => {
 
   const handleCouponCode = async (event) => {
     event.preventDefault();
+    try {
+      if (!user) {
+        return toast('Please login first', { icon: '⚠️' });
+      }
+      const token = await getToken();
+      const { data } = await axios.post(
+        '/api/coupon',
+        { code: couponCodeInput },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setCoupon(data.coupon);
+      toast.success('Coupon applied');
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    }
   };
 
   const handlePlaceOrder = async (e) => {
@@ -175,7 +195,12 @@ const OrderSummary = ({ totalPrice, items }) => {
                   ).toFixed(2)
                 : (totalPrice + 5).toLocaleString()
             }`}
-          ></Protect>
+          >
+            {currency}
+            {coupon
+              ? (totalPrice - (coupon.discount / 100) * totalPrice).toFixed(2)
+              : totalPrice.toLocaleString()}
+          </Protect>
         </p>
       </div>
       <button

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import AdminLayout from '@/components/admin/AdminLayout';
 import Loading from '@/components/Loading';
