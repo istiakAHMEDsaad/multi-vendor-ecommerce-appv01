@@ -42,8 +42,6 @@ export default function Orders() {
     return <Loading />;
   }
 
-  console.log(orders);
-
   return (
     <div className='min-h-[70vh] mx-6'>
       {orders.length > 0 ? (
