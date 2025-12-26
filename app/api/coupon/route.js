@@ -7,6 +7,7 @@ export async function POST(request) {
   try {
     const { userId, has } = getAuth(request);
     const { code } = await request.json();
+
     const coupon = await prisma.coupon.findUnique({
       where: { code: code.toUpperCase(), expiresAt: { gt: new Date() } },
     });
