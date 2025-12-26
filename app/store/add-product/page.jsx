@@ -10,6 +10,9 @@ export default function StoreAddProduct() {
   const categories = [
     'Electronics',
     'Clothing',
+    'Accessories',
+    'Jewelry',
+    'Baby Products',
     'Home & Kitchen',
     'Beauty & Health',
     'Toys & Games',
@@ -17,6 +20,7 @@ export default function StoreAddProduct() {
     'Books & Media',
     'Food & Drink',
     'Hobbies & Crafts',
+    'Stationery & Medicine',
     'Others',
   ];
 

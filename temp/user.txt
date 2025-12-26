@@ -2,6 +2,12 @@ normal user 1:
 email: xodig27888@mucate.com
 pass: Xodig27888@mucate
 
+
+normal user 1:
+email: i2prruolt4@illubd.com
+pass: I2prruolt4@illubd
+
+
 seller 1:
 email: xodig27888@mucate.com
 num: 16143752923
