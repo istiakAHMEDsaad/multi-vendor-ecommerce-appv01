@@ -1,6 +1,7 @@
-import { getAuth } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getAuth } from '@clerk/nextjs/server';
+import { PaymentMethod } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 // cash on delivery methods
 export async function POST(request) {
@@ -28,15 +29,15 @@ export async function POST(request) {
     let coupon = null;
 
     if (couponCode) {
+      coupon = await prisma.coupon.findUnique({
+        where: { code: couponCode },
+      });
       if (!coupon) {
         return NextResponse.json(
           { error: 'Coupon not found' },
           { status: 400 }
         );
       }
-      coupon = await prisma.coupon.findUnique({
-        where: { code: couponCode },
-      });
     }
 
     // check if coupon is applicable for new users
@@ -109,7 +110,7 @@ export async function POST(request) {
           isCouponUsed: coupon ? true : false,
           coupon: coupon ? coupon : {},
           orderItems: {
-            create: sellerItems.Map((item) => ({
+            create: sellerItems.map((item) => ({
               productId: item.id,
               quantity: item.quantity,
               price: item.price,
@@ -142,8 +143,8 @@ export async function GET(request) {
       where: {
         userId,
         OR: [
-          { paymentMethod: paymentMethod.COD },
-          { AND: [{ paymentMethod: paymentMethod.STRIPE }, { isPaid: true }] },
+          { paymentMethod: PaymentMethod.COD },
+          { AND: [{ paymentMethod: PaymentMethod.STRIPE }, { isPaid: true }] },
         ],
       },
       include: {

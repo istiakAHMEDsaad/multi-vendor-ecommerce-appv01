@@ -2,14 +2,17 @@ import { PlusIcon, SquarePenIcon, XIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AddressModal from './AddressModal';
 import { Protect, useAuth, useUser } from '@clerk/nextjs';
 import axios from 'axios';
+import { fetchCart } from '@/lib/features/cart/cartSlice';
 
 const OrderSummary = ({ totalPrice, items }) => {
   const { user } = useUser();
   const { getToken } = useAuth();
+
+  const dispatch = useDispatch();
 
   const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$';
 
@@ -45,8 +48,42 @@ const OrderSummary = ({ totalPrice, items }) => {
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
+    try {
+      if (!user) {
+        return toast('Please login to place an order', { icon: '⚠️' });
+      }
 
-    router.push('/orders');
+      if (!selectedAddress) {
+        return toast('Please select an address', { icon: '⚠️' });
+      }
+
+      const token = await getToken();
+
+      const orderData = {
+        addressId: selectedAddress.id,
+        items,
+        paymentMethod,
+      };
+
+      if (coupon) {
+        orderData.couponCode = coupon.code;
+      }
+
+      // create order:
+      const { data } = await axios.post('/api/orders', orderData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (paymentMethod === 'STRIPE') {
+        window.location.href = data.session.url;
+      } else {
+        toast.success(data.message);
+        router.push('/orders');
+        dispatch(fetchCart({ getToken }));
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.error || error.message);
+    }
   };
 
   return (
