@@ -6,11 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "prisma generate && next build --turbopack",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint .",
     "postinstall": "prisma generate"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.36.5",
+    "@eslint/config-array": "^0.23.0",
+    "@eslint/object-schema": "^3.0.0",
     "@neondatabase/serverless": "^1.0.2",
     "@prisma/adapter-neon": "^7.2.0",
     "@prisma/client": "6.19.1",
@@ -21,6 +23,7 @@
     "inngest": "^3.48.1",
     "lucide-react": "^0.562.0",
     "next": "15.5.9",
+    "openai": "^6.15.0",
     "prisma": "6.19.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -31,15 +34,19 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@next/eslint-plugin-next": "^16.1.1",
+    "@eslint/eslintrc": "3.3.3",
+    "@eslint/js": "^9.39.2",
+    "@next/eslint-plugin-next": "16.1.1",
     "@tailwindcss/postcss": "^4",
     "@types/ws": "^8.18.1",
-    "eslint": "8.57.0",
+    "eslint": "9.39.2",
     "eslint-config-next": "15.5.9",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "prettier": "^3.7.4",
     "tailwindcss": "^4"
   }
 }

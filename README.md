@@ -5,3 +5,4 @@
 [Inngest Docs](https://www.inngest.com/docs/getting-started/nextjs-quick-start)<br/>
 [ImageKit Docs](https://www.npmjs.com/package/imagekit#file-upload)<br/>
 [Stripe Session Docs](https://docs.stripe.com/api/checkout/sessions/create?lang=node)<br/>
+[Gemini OpenAI Docs](https://ai.google.dev/gemini-api/docs/openai?hl=en)<br/>
